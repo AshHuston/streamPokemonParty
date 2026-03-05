@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slots</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 150px 200px;
+        gap: 12px 20px;
+        align-items: center;
+    }
+
+    input {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .button-container {
+        grid-column: span 3;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 8px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 150px);
+        grid-auto-rows: 85px;
+        background-color: #d31d01;
+        padding: 150px;
+        justify-content: center;
+        width: 600px; 
+        height: 700px;
+    }
+
+    .grid-container img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .grid-text {
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 60px; 
+    }
+</style>
+</head>
+
+<body>
+
+<form class="container" style="margin:25px">
+    <input type="text" id="slot1" placeholder="SLOT 1">
+    <input type="text" id="nickname1" placeholder="NICKNAME 1">
+    <div><input type="checkbox" id="is-shiny1">Shiny?</div>
+
+    <input type="text" id="slot2" placeholder="SLOT 2">
+    <input type="text" id="nickname2" placeholder="NICKNAME 2">
+    <div><input type="checkbox" id="is-shiny2">Shiny?</div>
+
+    <input type="text" id="slot3" placeholder="SLOT 3">
+    <input type="text" id="nickname3" placeholder="NICKNAME 3">
+    <div><input type="checkbox" id="is-shiny3">Shiny?</div>
+
+    <input type="text" id="slot4" placeholder="SLOT 4">
+    <input type="text" id="nickname4" placeholder="NICKNAME 4">
+    <div><input type="checkbox" id="is-shiny4">Shiny?</div>
+
+    <input type="text" id="slot5" placeholder="SLOT 5">
+    <input type="text" id="nickname5" placeholder="NICKNAME 5">
+    <div><input type="checkbox" id="is-shiny5">Shiny?</div>
+
+    <input type="text" id="slot6" placeholder="SLOT 6">
+    <input type="text" id="nickname6" placeholder="NICKNAME 6">
+    <div><input type="checkbox" id="is-shiny6">Shiny?</div>
+
+    <div class="button-container">
+        <button type="button" onclick="generateImage()">GENERATE</button>
+    </div>
+</form>
+<div class="grid-container">
+    <img id="img1">
+    <img id="img2">
+    <div id="name1" class="grid-text"></div>
+    <div id="name2" class="grid-text"></div>
+    <img id="img3">
+    <img id="img4">
+    <div id="name3" class="grid-text"></div>
+    <div id="name4" class="grid-text"></div>
+    <img id="img5">
+    <img id="img6">
+    <div id="name5" class="grid-text"></div>
+    <div id="name6" class="grid-text"></div>
+</div>
+
+<script>
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            generateImage();
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        generateImage();
+    });
+
+    function generateImage() {
+        console.log("Generating image...");
+        
+        const slots = [
+            document.getElementById("slot1").value,
+            document.getElementById("slot2").value,
+            document.getElementById("slot3").value,
+            document.getElementById("slot4").value,
+            document.getElementById("slot5").value,
+            document.getElementById("slot6").value
+        ]
+        const nicknames = [
+            document.getElementById("nickname1").value,
+            document.getElementById("nickname2").value,
+            document.getElementById("nickname3").value,
+            document.getElementById("nickname4").value,
+            document.getElementById("nickname5").value,
+            document.getElementById("nickname6").value
+        ]
+
+        const shinies = [
+            document.getElementById("is-shiny1").checked,
+            document.getElementById("is-shiny2").checked,
+            document.getElementById("is-shiny3").checked,
+            document.getElementById("is-shiny4").checked,
+            document.getElementById("is-shiny5").checked,
+            document.getElementById("is-shiny6").checked
+        ]
+
+        for (let i = 0; i < slots.length; i++) {
+            const baseurl = "https://pokeapi.co/api/v2/pokemon/"
+            fetch(baseurl + slots[i])
+            .then(response => response.json())
+            .then(data => {
+                const frlg = data.sprites.versions["generation-iii"]["firered-leafgreen"];
+                const imagePath = shinies[i] ? frlg.front_shiny : frlg.front_default;
+                document.getElementById(`img${i+1}`).src = imagePath;
+                document.getElementById(`name${i+1}`).textContent = nicknames[i].length ? nicknames[i] : slots[i];
+            })
+            .catch(error => {
+                console.error("Error fetching Pokémon data:", error);
+                if (nicknames[i].length > 0) {
+                    document.getElementById(`img${i+1}`).src = "missingno.png";
+                    document.getElementById(`name${i+1}`).textContent = "missingNo";
+                } else {
+                    document.getElementById(`img${i+1}`).src = "blank.png";
+                    document.getElementById(`name${i+1}`).textContent = "";
+                }
+            });   
+        }
+    }
+</script>
+
+</body>
+</html>
