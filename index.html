@@ -40,7 +40,6 @@
         display: grid;
         grid-template-columns: repeat(2, 150px);
         grid-auto-rows: 85px;
-        background-color: #d31d01;
         padding: 150px;
         justify-content: center;
         width: 600px; 
@@ -89,11 +88,20 @@
     <input type="text" id="nickname6" placeholder="NICKNAME 6">
     <div><input type="checkbox" id="is-shiny6">Shiny?</div>
 
+    <div>
+        Background Color:
+        <input type="radio" name="color" value="#d31d01" checked="true"> Red
+        <input type="radio" name="color" value="white"> White
+        <input type="radio" name="color" value="black"> Black
+        <input type="radio" name="color" value="cornflowerblue"> Blue
+    </div>
+
     <div class="button-container">
         <button type="button" onclick="generateImage()">GENERATE</button>
     </div>
 </form>
-<div class="grid-container">
+
+<div class="grid-container" id="box" >
     <img id="img1">
     <img id="img2">
     <div id="name1" class="grid-text"></div>
@@ -109,6 +117,21 @@
 </div>
 
 <script>
+    const radios = document.querySelectorAll('input[name="color"]');
+    const box = document.getElementById('box');
+    const texts = document.getElementsByClassName('grid-text');
+
+    box.style.backgroundColor = "#d31d01";
+    radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            box.style.backgroundColor = radio.value;
+
+            for (let i = 0; i < texts.length; i++) {
+                texts[i].style.color = box.style.backgroundColor === "white" ? 'black' : 'white';
+            };
+        });
+    });
+
     document.addEventListener("keydown", function(event) {
         if (event.key === "Enter") {
             generateImage();
